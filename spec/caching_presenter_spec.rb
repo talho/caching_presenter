@@ -34,6 +34,19 @@ module Example
   end  
 end
 
+class AfterInitializePresenter < CachingPresenter
+  presents :foo
+  attr_accessor :after_initialize_called
+  
+  def after_initialize
+    @after_initialize_called = true
+  end
+end
+
+class NoAfterInitializePresenter < CachingPresenter
+  presents :foo
+end
+
 
 describe CachingPresenter do
   it "should know what it is presenting on" do
@@ -141,6 +154,17 @@ describe CachingPresenter do
     AnotherFooPresenter = Class.new(SingleObjectPresenter)
     SingleObjectPresenter.new(:foo => obj).should_not == AnotherFooPresenter.new(:foo => obj2)
     SingleObjectPresenter.new(:foo => 4).should_not == AnotherFooPresenter.new(:foo => 6)
+  end
+  
+  it "should call after_initialize after a new instance of the presenter is created" do
+    presenter = AfterInitializePresenter.new(:foo => mock("foo"))
+    presenter.after_initialize_called.should be_true
+  end
+  
+  it "should not call after_initialize if it wasn't defined" do
+    lambda {
+      NoAfterInitializePresenter.new(:foo => mock("foo"))
+    }.should_not raise_error(NameError)
   end
 end
 
