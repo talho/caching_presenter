@@ -98,7 +98,11 @@ class CachingPresenter
     end
     
     def method_added(method_name)
-      memoize method_name.to_s
+      if self == CachingPresenter
+        super
+      else
+        memoize method_name.to_s
+      end
     end
   end
 end
