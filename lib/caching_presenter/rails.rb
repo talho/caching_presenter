@@ -1,3 +1,3 @@
 ApplicationController.instance_eval do
-  include CachingPresener::InstantiationMethods
+  include CachingPresenter::InstantiationMethods
 end
