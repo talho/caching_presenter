@@ -1,3 +1,3 @@
-ApplicationController.instance_eval do
+ActionController::Base.instance_eval do
   include CachingPresenter::InstantiationMethods
 end
