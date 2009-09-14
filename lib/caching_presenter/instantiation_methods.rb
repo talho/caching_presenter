@@ -5,8 +5,8 @@ class CachingPresenter
       presenter_class_name = "#{options.delete(:as) || obj.class.name}Presenter"
       presenter_class = _constantize(presenter_class_name)
       presenter_class.new options.merge(presenter_class.presents => obj)
-    rescue LoadError
-      raise "#{presenter_class_name} was not found for #{obj.inspect}"
+    rescue LoadError => ex
+      raise "#{presenter_class_name} was not found for #{obj.inspect}: #{ex}"
     end
   
     def present_collection(collection, options={})
