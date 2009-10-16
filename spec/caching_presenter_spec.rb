@@ -47,7 +47,6 @@ class NoAfterInitializePresenter < CachingPresenter
   presents :foo
 end
 
-
 describe CachingPresenter do
   it "should know what it is presenting on" do
     SingleObjectPresenter.presents.should == :foo
@@ -273,6 +272,21 @@ describe CachingPresenter, "caching methods" do
     presenter = myclass.new(:foo => Object.new)
     presenter.bar = 5
     presenter.bar = 4
+  end
+  
+  it "should not cache methods specifically told not to" do
+    myclass = Class.new(CachingPresenter)
+    myclass.class_eval do 
+      presents :foo
+      do_not_memoize :count
+      def count
+        @i ||= 0
+        @i += 1
+      end
+    end
+    presenter = myclass.new(:foo => Object.new)
+    presenter.count.should == 1
+    presenter.count.should == 2
   end
   
   describe "caching hash-like access with the #[] method" do

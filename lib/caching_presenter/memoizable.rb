@@ -31,7 +31,7 @@ class CachingPresenter
     end
 
     def memoize(method_name)
-      return if @cached_methods.include?(method_name) || DO_NOT_MEMOIZE.select{ |rgx| method_name.to_s =~ rgx}.any?
+      return if should_not_memoize?(method_name)
       original_method = Memoizable.encode_method_name(method_name)
       @cached_methods << method_name << original_method
       alias_method original_method, method_name
@@ -49,6 +49,20 @@ class CachingPresenter
           end
         end
       EOS
+    end
+    
+    def do_not_memoize(method_name)
+      do_not_memoize_methods << method_name
+    end
+    
+    def do_not_memoize_methods
+      @do_not_memoize_methods ||= []
+    end
+    
+    def should_not_memoize?(method_name)
+      @cached_methods.include?(method_name) || 
+      DO_NOT_MEMOIZE.select{ |rgx| method_name.to_s =~ rgx}.any? ||
+      do_not_memoize_methods.include?(method_name.to_sym)
     end
   end
 end
