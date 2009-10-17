@@ -1,7 +1,7 @@
 class CachingPresenter
   module Memoizable
     METHOD_PREFIX = "_unmemoized_"
-    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^method_missing$/, /^class$/, /=$/]
+    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^method_missing$/, /^class$/, /^metaclass$/, /=$/]
     REPLACEMENT_ENCODINGS = {
       /\[\]/ => "_square_brackets",
       /\?\Z/ => "_query",
@@ -9,7 +9,7 @@ class CachingPresenter
     }
     
     def self.encode(str)
-      str = str.dup
+      str = str.to_s.dup
       REPLACEMENT_ENCODINGS.each_pair do |pattern, replacement|
         str.gsub!(pattern, replacement)
       end

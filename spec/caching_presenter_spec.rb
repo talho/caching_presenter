@@ -165,8 +165,34 @@ describe CachingPresenter do
       NoAfterInitializePresenter.new(:foo => mock("foo"))
     }.should_not raise_error(NameError)
   end
+  
 end
 
+describe CachingPresenter, "automatically defining methods" do
+  context "when the same presenter class is used for different objects with different methods" do
+    before(:each) do
+      myclass = Class.new(CachingPresenter)
+      myclass.class_eval do 
+        presents :foo
+      end
+      @presenter1 = myclass.new(:foo => OpenStruct.new(:bar => 5))
+      @presenter2 = myclass.new(:foo => OpenStruct.new) # no bar defined
+    end
+    
+    it "should not respond to the methods that its presenter source doesn't respond to" do
+      @presenter1.should respond_to(:bar)
+      @presenter2.should_not respond_to(:bar)
+    end
+    
+    context "after calling a method that exists on one presenter source, but not the other" do
+      it "should not respond to the methods that its presenter source doesn't respond to" do
+        @presenter1.bar
+        @presenter1.should respond_to(:bar)
+        @presenter2.should_not respond_to(:bar)
+      end
+    end
+  end
+end
 
 describe CachingPresenter, "caching methods" do
   it "should cache method calls without arguments" do
