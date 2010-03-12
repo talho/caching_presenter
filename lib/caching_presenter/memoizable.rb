@@ -1,7 +1,7 @@
 class CachingPresenter
   module Memoizable
     METHOD_PREFIX = "_unmemoized_"
-    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^after_initialize$/, /^method_missing$/, /^class$/, /^metaclass$/, /=$/]
+    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^method_missing$/, /^class$/, /^metaclass$/, /=$/]
     REPLACEMENT_ENCODINGS = {
       /\[\]/ => "_square_brackets",
       /\?\Z/ => "_query",
@@ -60,7 +60,6 @@ class CachingPresenter
     end
     
     def should_not_memoize?(method_name)
-      return true unless @cached_methods
       @cached_methods.include?(method_name) || 
       DO_NOT_MEMOIZE.select{ |rgx| method_name.to_s =~ rgx}.any? ||
       do_not_memoize_methods.include?(method_name.to_sym)

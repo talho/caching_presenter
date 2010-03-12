@@ -73,7 +73,7 @@ class CachingPresenter
         arguments_to_instantiate.each do |key|
           self.instance_variable_set "@#{key}", args[key]
         end
-        after_initialize if respond_to?(:after_initialize)
+        after_initialize if respond_to? :after_initialize
         metaclass.extend Memoizable
       end
 
@@ -88,7 +88,7 @@ class CachingPresenter
       class_eval <<-EOS, __FILE__, __LINE__
         def method_missing(name, *args, &blk)
           source = instance_variable_get("@#{presents}")
-          if source && source.respond_to?(name) && source.public_methods.include?(name)
+          if source.respond_to?(name)
             metaclass.class_eval <<-END_INNER_CODE
               def \#{name}(*myargs, &myblk)
                 instance_variable_get("@#{presents}").\#{name}(*myargs, &myblk)
