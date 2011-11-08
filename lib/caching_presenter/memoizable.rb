@@ -1,7 +1,7 @@
 class CachingPresenter
   module Memoizable
     METHOD_PREFIX = "_unmemoized_"
-    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^method_missing$/, /^class$/, /^metaclass$/, /=$/]
+    DO_NOT_MEMOIZE = [/^#{METHOD_PREFIX}/, /^presents$/, /^initialize$/, /^method_missing$/, /^class$/, /^metaclass$/, /^to_param$/, /=$/]
     REPLACEMENT_ENCODINGS = {
       /\[\]/ => "_square_brackets",
       /\?\Z/ => "_query",
