@@ -73,8 +73,8 @@ class CachingPresenter
         arguments_to_instantiate.each do |key|
           self.instance_variable_set "@#{key}", args[key]
         end
-        after_initialize if respond_to? :after_initialize
         metaclass.extend Memoizable
+        after_initialize if respond_to? :after_initialize
       end
 
       define_method(:presents) do
